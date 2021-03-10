@@ -1,0 +1,15 @@
+---
+# DESCRIPTION
+# Apply windows updates
+
+- name: Apply windows updates
+#  hosts: windows_systems
+  hosts: all
+  gather_facts: no
+  connection: local
+  tasks:
+  - name: "Search and return list of found updates (if any)"
+    win_updates:
+      category_names: "{{ win_update_category }}"
+      state: searched
+      log_path: c:\ansible_wu.txt
