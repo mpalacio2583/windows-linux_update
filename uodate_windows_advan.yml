@@ -1,0 +1,21 @@
+---
+- name: update and reboot
+#  hosts: windows_systems
+  hosts: all
+  gather_facts: no
+  connection: local
+  vars:
+    categories: "{{ categories_name }}"
+    blacklist_package: "{{ blacklist_package_name }}"
+    whitelist_package: "{{ whitelist_package_name }}"
+  tasks:
+    - name: ensure common OS updates are current
+      win_updates:
+        category_names: "{{ categories }}"
+        blacklist: "{{ blacklist_package | default(omit, true) }}"
+        whitelist: "{{ whitelist_package | default(omit, true) }}"
+      register: result
+
+    - name: reboot and wait for host if updates change require it
+      win_reboot:
+      when: result.reboot_required
